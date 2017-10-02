@@ -31,4 +31,29 @@
   <a href="javascript:void(0)" (click)="insertVideo()" title="Insert Video" >
     <i class="fa fa-video-camera" aria-hidden="true"></i>
   </a>
+
+  <a href="javascript:void(0)" (click)="showPopup()" title="Insert Link" >
+    <i class="fa fa-link" aria-hidden="true"></i>
+  </a>
+</div>
+
+<div class="popupBackground" *ngIf="isPopupVisible"></div>
+
+<div class="popup" id="insertAnchorPopup" *ngIf="isPopupVisible">
+  <form #anchorForm=ngForm (ngSubmit)="insertAnchor()">
+    <div class="label">
+      <label for="AnchorTagText">Enter Text to display : </label>
+    </div>
+    <div class="inputText">
+      <input type="text" name="AnchorTagText" id="AnchorTagText" [(ngModel)]=anchorText>
+    </div>
+    <div class="label">
+      <label for="AnchorTagHref">Enter URL : </label>
+    </div>
+    <div class="inputText">
+      <input type="text" name="AnchorTagHref" id="AnchorTagHref" [(ngModel)]=anchorLink>
+    </div>
+    <button type="submit">Submit</button>
+    <button (click)="hidePopup()">Cancel</button>
+  </form>
 </div>

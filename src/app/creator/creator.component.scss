@@ -154,3 +154,38 @@
   }
 }
 
+/**
+  -----------------POPUP---------------------
+**/
+
+.popupBackground{
+  position: fixed;
+  background-color: black;
+  width: 100%;
+  height: 100%;
+  top: 0%;
+  left: 0%;
+  opacity: 0.3;
+  z-index: 10;
+}
+
+.popup{
+  position: fixed;
+  background-color: white;
+  width: 350px;
+  height: 150px;
+  top: 35%;
+  left: 35%;
+  z-index: 20;
+  padding: 10px;
+}
+
+.label{
+  float: left;
+  padding: 10px;
+  width: 145px;
+}
+
+.inputText{
+  padding: 10px;
+}

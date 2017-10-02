@@ -15,6 +15,13 @@ export class CreatorComponent implements OnInit {
    */
   @ViewChild('content') content: ElementRef;
 
+  isPopupVisible: boolean = false;
+  anchorLink: string;
+  anchorText: string;
+
+  divToaddAnchorLink;
+  curEl: HTMLElement;
+  caretPosition: number;
 
   /**
    * Creates an instance of CreatorComponent.
@@ -260,4 +267,102 @@ export class CreatorComponent implements OnInit {
     // Return true if we can delete
     return true;
   }
+
+  /**
+   * Insert an Anchor Link at current caret Position.
+   * if caret Position is not valid then insert Anchor 
+   * in last content Editable Div
+   * @returns 
+   * @memberof CreatorComponent
+   */
+  insertAnchor() {
+    const anchorTemplateBegin: string = "<a href=\"";
+    const anchorTemplateMiddle: string = "\">";
+    const anchorTemplateEnd: string = "</a>";
+    var finalInnerHtml: string = "";
+
+    if (!this.anchorLink || !this.anchorText) {
+      this.hidePopup();
+      return;
+    }
+
+    if (this.caretPosition >= 0) {
+      for (var index = 0; index < this.divToaddAnchorLink.childNodes.length; index++) {
+        var childNode = this.divToaddAnchorLink.childNodes[index];
+        var currentText: string
+
+        if (childNode == this.curEl) { // text node where new Link has to be added
+          const first = childNode.textContent.substring(0, this.caretPosition);
+          const last = childNode.textContent.substring(this.caretPosition);
+          currentText = first + anchorTemplateBegin +
+            this.anchorLink + anchorTemplateMiddle + this.anchorText + anchorTemplateEnd + last;
+        } else if (childNode.nodeType != 3) { // an anchor node
+          currentText = anchorTemplateBegin + childNode.href + anchorTemplateMiddle + childNode.innerText +
+            anchorTemplateEnd;
+        } else { // text node
+          currentText = childNode.textContent;
+        }
+        finalInnerHtml = finalInnerHtml + currentText;
+      }
+
+      this.divToaddAnchorLink.innerHTML = finalInnerHtml;
+
+    } else {
+      const anchor = this.createAnchorElement(this.anchorLink, this.anchorText);
+      this._renderer.appendChild(this.divToaddAnchorLink, anchor);
+    }
+
+    this.hidePopup();
+
+  }
+
+  /**
+   * Create an Anchor Element using given link and Text to display
+   * @param {string} link - The link to which this element should refer
+   * @param {string} text - The text to display
+   * @returns 
+   * @memberof CreatorComponent
+   */
+  createAnchorElement(link: string, text: string) {
+    const el = this._renderer.createElement('a');
+    this._renderer.setAttribute(el, 'href', link);
+    el.innerHTML = text;
+    return el;
+  }
+
+  /**
+   * show the popup to add Anchor Element and
+   * also select current div to add this Anchor element,
+   * if no valid div is selected then last Editable div is selected
+   * @memberof CreatorComponent
+   */
+  showPopup() {
+    // Select the element where current selection is
+    const curEl = document.getSelection().anchorNode as HTMLElement;
+    const parentElem = curEl.parentElement;
+    
+    if (parentElem.classList && parentElem.classList.contains('content')) {
+      this.curEl = curEl;
+      this.divToaddAnchorLink = parentElem;
+      this.caretPosition = document.getSelection().anchorOffset;
+    } else {
+      // last contentEditable Div 
+      this.divToaddAnchorLink = this.content.nativeElement.lastElementChild as HTMLElement;
+    }
+    this.isPopupVisible = true;
+  }
+
+  /**
+   * hide the popup to add Anchor Element
+   * and clear popup input fields and reset Caret Position
+   * 
+   * @memberof CreatorComponent
+   */
+  hidePopup() {
+    this.anchorLink = undefined;
+    this.anchorText = undefined;
+    this.caretPosition = -1;
+    this.isPopupVisible = false;
+  }
+
 }
