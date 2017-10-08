@@ -294,11 +294,10 @@ export class CreatorComponent implements OnInit {
         if (childNode == this.curEl) { // text node where new Link has to be added
           const first = childNode.textContent.substring(0, this.caretPosition);
           const last = childNode.textContent.substring(this.caretPosition);
-          currentText = first + anchorTemplateBegin +
-            this.anchorLink + anchorTemplateMiddle + this.anchorText + anchorTemplateEnd + last;
+          currentText = first + anchorTemplateBegin + this.anchorLink + anchorTemplateMiddle + 
+            this.anchorText + anchorTemplateEnd + last;
         } else if (childNode.nodeType != 3) { // an anchor node
-          currentText = anchorTemplateBegin + childNode.href + anchorTemplateMiddle + childNode.innerText +
-            anchorTemplateEnd;
+          currentText = anchorTemplateBegin + childNode.href + anchorTemplateMiddle + childNode.innerText + anchorTemplateEnd;
         } else { // text node
           currentText = childNode.textContent;
         }
